@@ -1,0 +1,88 @@
+\documentclass[11pt]{article}
+
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth=6in
+\textheight=8in
+
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
+
+\lstset{
+  backgroundcolor=\color{backcolor},
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  captionpos=b,
+  numbers=left,
+  numbersep=5pt,
+  showstringspaces=false,
+  tabsize=2,
+  language=Python
+}
+
+
+\begin{document}
+\hfill\vbox{\hbox{Jude Shin}
+		\hbox{CSC 4888-S01}	
+		\hbox{Homework 0}	
+		\hbox{\today}}\par
+
+\bigskip
+\centerline{\Large\bf Background Subtraction}\par
+\bigskip
+
+\section{Code Explanation}
+
+\subsection{Design Choices}
+
+For the final output I put the bounding boxes around the original frames.
+It looks nicer to see the output in color instead of a gray-scale video. 
+
+\subsection{External Resources Used}
+
+\subsubsection{VS Code and Video Player}
+
+I had some issues with VS Code displaying the frames in the video for a while.
+I used Gemini to try and help me debug what was going on, but nothing worked.
+After a while I gave up and loaded the \lstinline{.ipynb} into a Google Colab environment and that worked just fine. 
+I think I am going to use that from now on. 
+
+\subsubsection{Scikit-image Documentation}
+
+For the implementation of showing the \lstinline{'gray'} and \lstinline{'viridis'} color schemes, I looked at the \href{https://scikit-image.org/docs/0.23.x/auto_examples/segmentation/plot_thresholding.html}{Scikit-image documentation}.
+I also used that documentation to look at the \lstinline{threshold_otsu} implementation.
+
+\section{Discussion Questions}
+
+\begin{enumerate}
+
+	\item When you compute the average image (background image), the cars have disappeared -- why?
+
+		The parts that are moving (changing pixel values) are drowned out by the background that is constant.
+		If a portion of the road is always black except for the two frames that a red car passes through it, the average of all the frames would still be relatively black.
+
+	\item How well does the technique work to separate the cars from the background? Where does it fail and why?
+
+		In my implementation there are individual white blobs that show up with small bounding boxes around them.
+		I think this is happening because the threshold separates these blobs from the actual ``object".
+		This leads to small bounding boxes within a larger moving object.
+
+		Another issue that I can foresee happening is false car identification.
+		This algorithm works for anything moving, not just a car.
+		If a bird or animal were to cross the road, then that would mess up the averaged background image and result in a bounding box around that.
+\end{enumerate}
+
+\end{document}
