@@ -1,0 +1,66 @@
+\documentclass[11pt]{article}
+
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth=6in
+\textheight=8in
+
+\begin{document}
+\hfill\vbox{\hbox{Jude Shin}
+		\hbox{CSC 4888-S01-2268}	
+		\hbox{Homework 1}	
+		\hbox{\today}}\par
+
+\bigskip
+\centerline{\Large\bf RAW Image Processing}\par
+\bigskip
+
+\section{A Note on Python Notebooks}
+
+Each code block in the python notebook generally equates to each step.
+I developed this in Google Colab in the browser.
+The main function on the bottom links all of the transformations together into one function.
+This is done so that I don't accidentally write something in the global scope.
+From what I understand, all variables are in one global python file.
+
+If you are running in Google Colab, you have to upload the images every time to the local storage.
+I also ignored the requirements.txt and just manually installed the libraries using the pip command.
+
+\section{Explanation}
+
+\subsection{Demosaicing}
+
+Before any of the other per-pixel transformations, I performed a demosaicing algorithm on the RAW image. 
+The array of floats represent different r g b values in a Bayer pattern.
+At each of the points, the rgb values are averaged with particular filters, taking in the channels in questions around the point we are looking at.
+Once all of the individual channels are filtered, then I stack all of them on top of each other to get an 3 channel image.
+
+Once I have that rgb image, then I can perform the other simple per pixel transformations for each pixel in the image.
+
+\subsection{White Balance}
+
+I get the mean of each r g b channels, and then multiply each point by a scalar to get the average of each channel to be a particular float.
+In our case, we chose 0.25.
+Since this is a per pixel transformation, I took advantage of some numpy syntax instead of nested for loops.
+
+\subsection{(Inverse) Gamma Curve}
+
+For each of the values in a channel, I raise the color value to the inverse of a gamma value.
+In our case, we chose 0.25.
+Since this is a per pixel transformation, I took advantage of some numpy syntax instead of nested for loops.
+
+\subsection{Clip and Quantize}
+
+I used numpy.clip and numpy.round for clipping and converting to 8-bit integers.
+I also scaled the values by 255 to convert from the floating points (which we have been computing in) into the integer values which we can use for colors.
+
+\section{Sources Used}
+
+For the clipping part of this homework, I googled the documentation and found that numpy has its own clipping function.
+I also ran into some issues at the very end with rounding values, so I googled the documentation for numpy and found that they also had a rounding function.
+All other code bits (like indexing and slicing) was referenced from other labs.
+
+\end{document}

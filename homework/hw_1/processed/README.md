@@ -1,0 +1,1 @@
+Generated JPEGs will go here.
