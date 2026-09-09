@@ -1,0 +1,67 @@
+\documentclass[11pt]{article}
+
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth=6in
+\textheight=8in
+
+\begin{document}
+\hfill\vbox{\hbox{Jude Shin, Benjamin Varni}
+		\hbox{CSC 4888-S01}	
+		\hbox{Lab 03}	
+		\hbox{\today}}\par
+
+\bigskip
+\centerline{\Large\bf Camera Calibration}\par
+\bigskip
+
+
+\section{Estimating the Field of View}
+
+I think that my Google Pixel 9 has a field of view that is around 60° (on the normal zoom).
+
+\section{Manually Calculate the Field of View}.
+
+Measured Values:
+
+\begin{itemize}
+
+	\item \textit{wreal} (length of the real object): 8.5 in.
+
+	\item \textit{d} (distance from the camera to the object): 6.25 in.
+
+	\item \textit{wpx} (length of the virtual image): 4032 px. 
+
+\end{itemize}
+
+Focal Length:
+
+\begin{equation}
+	f = d(wpx/wreal)
+\end{equation}
+
+Field of View:
+
+\begin{equation}
+	fov = 2*arctan(w/2f) = 68.42
+\end{equation}
+
+\section{OpenCV's Calculation of the Field of View}
+
+OpenCV estimated the field of view for my camera to be 3.07051048e+03.
+Using the same equation above, we would get the following.
+
+\begin{equation}
+	fov = 2*arctan(4032px/2*3,070.51048px)
+	= 66.58
+\end{equation}
+
+\section*{Comparison}
+
+The manual calculation of the field of view was only off by around 2°.
+This is a 2.76\% error.
+
+\end{document}
