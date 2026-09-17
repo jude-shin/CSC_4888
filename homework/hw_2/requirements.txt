@@ -1,0 +1,8 @@
+numpy
+matplotlib
+imageio
+scikit-image>=0.25
+scikit-learn
+ipywidgets
+ipykernel
+imageio[ffmpeg]
