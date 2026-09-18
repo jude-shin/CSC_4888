@@ -45,20 +45,7 @@
 
 \section{Explanation}
 
-\section{Demo}
-
-The last code block has three demos that perform the requirements listed in the GitHub repo.
-All of the constants for the demo that is turned in is for the \lstinline{red_and_blue.mov} video.
-
-\begin{itemize}
-	\item Show the result of \lstinline{preprocess_image}.
-	\item Show the result of \lstinline{detect_circles} and \lstinline{calculate_ball_position} (use \lstinline{draw_ball} to draw the ball on the image.) You should draw all balls detected, even if there is more than one.
-	\item Show the result of \lstinline{draw_bounding_cube}.
-	\item Concatenate all 3D ball positions detected across all frames into an array and show the result as a 3D scatter plot.
-
-\end{itemize}
-
-\section{Overview}
+\subsection{Overview}
 
 I basically just filled in all of the functions that were given to me in the python notebook.
 Nothing too out of the ordinary there.
@@ -74,7 +61,7 @@ So was the 2d line.
 Once we had the center we could also draw a cube around the points, calculating the theoretical world coordinates of the corners, and then projecting them to image coordinates, and then drawing lines between them.
 The separation of 2d and 3d functions made this easy to think about.
 
-\section{Where I Deviated}
+\subsection{Where I Deviated}
 
 There were some instructions that I didn't follow, and there were some functions that I changed.
 
@@ -84,6 +71,25 @@ I think there are times and places for Python notebooks but I try and stay away 
 It just feels weird to me.
 
 Once I have those functions that takes a frame in, draws on it, then returns it then I can call all of the draw functions in the final code block that uses the video player.
+
+\section{Issues}
+
+I still had issues with the circle detection; if the circle was not detected properly, then the rest of the functions would be completely off and irrelevant.
+You can see this in the drawn circle and cube.
+I will probably have to work with the \lstinline{sigma}, \lstinline{low_threshold} and \lstinline{high_threshold} more to get more accurate readings.
+
+\section{Demo}
+
+The last code block has three demos that perform the requirements listed in the GitHub repo.
+All of the constants for the demo that is turned in is for the \lstinline{red_and_blue.mov} video.
+
+\begin{itemize}
+	\item Show the result of \lstinline{preprocess_image}.
+	\item Show the result of \lstinline{detect_circles} and \lstinline{calculate_ball_position} (use \lstinline{draw_ball} to draw the ball on the image.) You should draw all balls detected, even if there is more than one.
+	\item Show the result of \lstinline{draw_bounding_cube}.
+	\item Concatenate all 3D ball positions detected across all frames into an array and show the result as a 3D scatter plot.
+
+\end{itemize}
 
 \section{Sources Used}
 
