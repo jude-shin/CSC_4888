@@ -142,8 +142,6 @@ distances, indices = knn_model.kneighbors(query_hists, n_neighbors=QUERY_K)
 # STEP 10 ======================================================================
 
 # Plot each query image next to its nearest neighbors
-
-# (Assumes 'image_paths' is the sorted list of file paths for your original database images)
 for i, q_path in enumerate(query_paths):
     # Create a row of subplots: 1 for the query + QUERY_K for neighbors
     fig, axes = plt.subplots(1, QUERY_K + 1, figsize=(2 * (QUERY_K + 1), 3))
