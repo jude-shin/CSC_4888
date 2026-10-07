@@ -15,32 +15,35 @@ Original file is located at
 
 import skimage
 import numpy as np
-import imageio.v3 as iio
-import cv2 as cv
 import glob
 
-from ipywidgets import interact, IntSlider
 from matplotlib import pyplot as plt
-from imageio.v3 import imread, imwrite
-from skimage import transform, data
-from skimage.color import rgb2gray
-from skimage.feature import match_descriptors, plot_matched_features, SIFT
+from imageio.v3 import imread
+from skimage.feature import SIFT
 
 from tqdm import tqdm
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import NearestNeighbors
 
+#############
+### Magic ###
+#############
+QUERY_K = 5
+
+###################################
+### Build the Visual Vocabulary ###
+###################################
+
 # STEP 1 =======================================================================
 
 # Load all images in the Children Books Director
-paths = sorted(glob.glob('Childrens-Books/000039*.jpg'))
-images = []
+paths = sorted(glob.glob('Childrens-Books/*.jpg'))
+train_images = []
 for p in tqdm(paths, desc='processing images'):
-    images.append(skimage.color.rgb2gray(imread(p)))
+    train_images.append(skimage.color.rgb2gray(imread(p)))
 
 # STEP 2 =======================================================================
-
 SIFT_MODEL = SIFT()
 
 def get_key_and_desc(img, sift=SIFT_MODEL):
@@ -52,18 +55,22 @@ def get_key_and_desc(img, sift=SIFT_MODEL):
 
 # Get all descriptors for all images
 descriptors = []
-for img in tqdm(images, desc='detecting keypoints'):
-    descriptors.append(get_key_and_desc(img)[1])
+for t_img in tqdm(train_images, desc='detecting keypoints'):
+    descriptors.append(get_key_and_desc(t_img)[1])
 all_descriptors = np.concatenate(descriptors)
 
-# STEP 3 =======================================================================
+# STEP 3 ===================================================================
 
 # Cluster all descriptors into 1000 clusters
 print('clustering descriptors with kmeans...')
 kmeans = KMeans(n_clusters=1000, random_state=0, n_init="auto").fit(all_descriptors)
 print('finished Clustering descriptors with kmeans!')
 
-# STEP 4 =======================================================================
+###################################
+### Convert Images to Documents ###
+###################################
+
+# STEP 4 ===================================================================
 
 # Use the KMeans clustering to convert each list of SIFT descriptors into a 
 # list of cluster labels (using .predict()).
@@ -71,34 +78,88 @@ cluster_labels = []
 for desc in tqdm(descriptors, desc='converting to cluster labels'):
     cluster_labels.append(kmeans.predict(desc))
 
-# STEP 5 =======================================================================
+# STEP 5 ===================================================================
 
 # Convert each list of cluster labels into a string (using str()). Now each 
 # image has been converted into a "text document"
 txt_documents = []
 for label in tqdm(cluster_labels, desc='converting labels to strings'):
     txt_documents.append(str(label))
+    
+# STEP 6 ===================================================================
 
-
-# STEP 6 =======================================================================
-
-# Use sklearn.feature_extraction.text.TfidfVectorizer to convert each "document"
-# to a tf-idf weighted histogram
-
+# Use sklearn.feature_extraction.text.TfidfVectorizer to convert each
+# "document" to a tf-idf weighted histogram
 
 print('converting documents to histograms...')
-histograms = TfidfVectorizer().fit_transform(txt_documents)
+vectorizer = TfidfVectorizer()
+train_hists = vectorizer.fit_transform(txt_documents)
 print('finished converting documents to histograms!')
 
 # STEP 7 =======================================================================
 
 # Build a k nearest neighbors model on the histograms
 
+print('fitting nearest neighbors model...')
 knn_model = NearestNeighbors(metric='cosine')
-knn_model.fit(histograms)
+knn_model.fit(train_hists)
+print('finished fitting nearest neighbors model!')
+
+#########################
+### Test Image Search ###
+#########################
 
 # STEP 8 =======================================================================
+
+# Load all query images
+query_paths = sorted(glob.glob('extra-queries/*.jpg'))
+query_images = []
+for q_p in tqdm(query_paths, desc='processing images'):
+    query_images.append(skimage.color.rgb2gray(imread(q_p)))
+
+query_descriptors = []
+for q_img in tqdm(query_images, desc='detecting keypoints'):
+    query_descriptors.append(get_key_and_desc(q_img)[1])
+
+query_cluster_labels = []
+for query_desc in tqdm(query_descriptors, desc='converting to cluster labels'):
+    query_cluster_labels.append(kmeans.predict(query_desc))
+
+query_documents = []
+for label in tqdm(query_cluster_labels, desc='converting labels to strings'):
+    query_documents.append(str(label))
+    
+print('converting documents to histograms...')
+query_hists = vectorizer.transform(query_documents)
+print('finished converting documents to histograms!')
+
 # STEP 9 =======================================================================
+
+# use the knn model to predict the top QUERY_K closest documents
+
+distances, indices = knn_model.kneighbors(query_hists, n_neighbors=QUERY_K)
+
 # STEP 10 ======================================================================
 
-print(knn_model)
+# Plot each query image next to its nearest neighbors
+
+# (Assumes 'image_paths' is the sorted list of file paths for your original database images)
+for i, q_path in enumerate(query_paths):
+    # Create a row of subplots: 1 for the query + QUERY_K for neighbors
+    fig, axes = plt.subplots(1, QUERY_K + 1, figsize=(2 * (QUERY_K + 1), 3))
+    
+    # Plot the query image
+    axes[0].imshow(plt.imread(q_path))
+    axes[0].set_title("Query Image", fontsize=10)
+    axes[0].axis('off')
+    
+    # Plot each nearest neighbor
+    for j, neighbor_idx in enumerate(indices[i]):
+        neighbor_path = paths[neighbor_idx]
+        axes[j + 1].imshow(plt.imread(neighbor_path))
+        axes[j + 1].set_title(f"Rank {j+1}", fontsize=10)
+        axes[j + 1].axis('off')
+        
+    plt.tight_layout()
+    plt.show()
+
