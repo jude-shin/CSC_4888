@@ -75,6 +75,11 @@ I got a bunch of weird results because I put everything to create a ``word" in a
 In turn, I used a completely new \lstinline{KMeans} object, resulting in completely different (and irrelevant) words.
 I just got rid of the function entirely and just had some duplicated code.
 
+I also ended up running out of compute time on Google Colab, so I wrote everything in one python script and ran it on my laptop.
+It took forever, and when I messed something up, I would have to redo everything.
+This was tedious and time consuming, but thankfully I didn't have to do that too many times.
+This is why I added \lstinline{tqdm} to track the progress of each step.
+
 \section{Discussion Questions}
 
 \begin{enumerate}
