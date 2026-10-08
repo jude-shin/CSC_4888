@@ -71,7 +71,7 @@ For each of the results that we got from the \lstinline{KNN} query, we just plot
 
 \section{Issues}
 
-I got a bunch of weird results because I put everything to create a ``word" in a separate function (including the \lstinline{KMeans} model). 
+I got a bunch of weird results because I put everything to create a ``word" in a separate function (including the \lstinline{KMeans} model).
 In turn, I used a completely new \lstinline{KMeans} object, resulting in completely different (and irrelevant) words.
 I just got rid of the function entirely and just had some duplicated code.
 
@@ -103,8 +103,8 @@ This is why I added \lstinline{tqdm} to track the progress of each step.
 	\item \textit{The two images in extra-queries are of books not included in the database. Test what happens when you search for these books.}
 
 		The program doesn't just crash or something; it is pretty good at generalizing features.
-		The themes that were talked about in the previous question are translated to these "unseen" images. 
-		The ``Piano" book seen in Figure \ref{fig:extra_query_1} got a similar piano teaching book on rank 5, which was cool. 
+		The themes that were talked about in the previous question are translated to these "unseen" images.
+		The ``Piano" book seen in Figure \ref{fig:extra_query_1} got a similar piano teaching book on rank 5, which was cool.
 		It wasn't the exact same book, but it had a similar graphic of a piano with wings.
 
 		The other query seen in Figure \ref{fig:extra_query_2} image had a lot of sharp bold text that took up a good chunk of the cover.
