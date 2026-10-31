@@ -1,0 +1,3 @@
+[submodule "scene-recon-editing"]
+	path = scene-recon-editing
+	url = git@github.com:bvarni-calpoly/scene-recon-editing.git
