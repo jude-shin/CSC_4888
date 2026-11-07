@@ -1,0 +1,129 @@
+\documentclass[11pt]{article}
+
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth=6in
+\textheight=8in
+
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{pgffor}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+\hfill\vbox{\hbox{Jude Shin}
+		\hbox{CSC 4888-S01}	
+		\hbox{Lab 11.2: Exam Questions}	
+		\hbox{\today}}\par
+
+\bigskip
+\centerline{\Large\bf Module 7 Exam Questions: 3D Vision}\par
+\bigskip
+
+\begin{enumerate}
+
+	{\bf \item Definition Question:}
+
+		Suppose we have detected 2D projections of known 3D points.
+		Suppose also the camera intrinsics for a particular set of images is known.
+		What is the least number of 2D-to-3D correspondences needed to estimate the projection matrix?
+
+		\begin{enumerate}
+
+			\item 1
+
+			\item 2
+
+			{\bf \item 3}
+
+			\item 4
+
+		\end{enumerate}
+
+		{\bf Reasoning:} {\it The rotation and translation matrix are the only unknowns in the projection matrix P. Because of this, we can ignore the intrinsics matrix K, eliminating the need to figure out focal length (f) and the camera center (cx, cy). The only variables remaining are rotation and translation. There are 3 degrees of freedom in the rotation matrix, and 3 degrees of freedom in the translation matrix.}
+
+	{\bf \item Conceptual Question:}
+
+		Suppose you come across two pairs of stereo images, A and B, that were taken from the same cameras.
+		(Stereo pair A has two images, and Stereo pair B also has two images, resulting in four images total).
+		You find some key-points in each image and find that the disparity from the key-points in pair A is {\it smaller} than the key-points in pair B. Which of the following is true about the depth of those key-points?
+
+		\begin{enumerate}
+
+			{\bf \item The real world point in pair A is {\it further} from the cameras than in pair B.}
+
+			\item The real world point in pair A is {\it closer} from the cameras than in pair B.
+
+			\item Both real world points in pairs A and B are the {\it same depth} from the cameras.
+
+			\item It is impossible to tell which real world point is further from the cameras with the given information.
+
+		\end{enumerate}
+
+		{\bf Reasoning:} {\it Intuitively, ``things" that are far away from us move less than ``things" close to us. (i.e. mountains vs your outstretched hand). In stereo, the disparity is inversely related to the depth of a point.}
+
+	{\bf \item Computational Question:}
+	
+		A candidate 3D point $X$ is seen by two cameras. Let $u_i$ be the measured pixel location, and let $proj(P_iX)$ be the pixel location predicted from camera $P_i$.
+
+		Suppose the following are the measured pixel locations and the associated projections.
+
+		\begin{gather*}
+			u_1=(4, 3), \qquad proj(P_1X)=(3, 3) \\
+			u_2=(7, 6), \qquad proj(P_2X)=(7, 2)
+		\end{gather*}
+
+		Calculate the error given the following error model used for triangulation.
+		Assume we are using Euclidean distance.
+		\[
+			\operatorname{err}(X)
+			=
+			\sum_{i=1}^{n}
+			\left\|
+			u_i - \operatorname{proj}(P_i X)
+			\right\|^2
+		\]
+
+		\begin{enumerate}
+			\item -23
+			\item 0
+			\item 12
+			{\bf \item 17}
+		\end{enumerate}
+
+		{\bf Reasoning:} 
+
+		{\it For camera 1:}
+		\begin{align*}
+			err(cam1) &= \left\| u_1 - proj(P_1X) \right\|^2 \\
+			&= \left\| (4, 3) - (3, 3) \right\|^2 \\
+			&= \left\| (1, 0) \right\|^2 \\
+			&= 1^2 + 0^2 \\
+			&= 1 
+		\end{align*}
+
+		{\it For camera 2:}
+		\begin{align*}
+			err(cam2) &= \left\| u_2 - proj(P_2X) \right\|^2 \\
+			&= \left\| (7, 6) - (7, 2) \right\|^2 \\
+			&= \left\| (0, 4) \right\|^2 \\
+			&= 0^2 + 4^2 \\
+			&= 16
+		\end{align*}
+
+		{\it Squared error for camera 1: $1$.}
+
+		{\it Squared error for camera 2: $16$.}
+
+		{\it Total error: $1+16=17$}
+
+
+\end{enumerate}
+
+\end{document}
